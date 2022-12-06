@@ -1,7 +1,9 @@
 // For format details, see https://aka.ms/vscode-remote/devcontainer.json or this file's README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.163.0/containers/python-3
 {
-	"name": "devcontainer",
+	"name": "Advent Of Code 2022",
+	"context": "..",
+	"workspaceFolder": "..",
 	"build": {
 		"dockerfile": "Dockerfile",
 		"context": "..",
