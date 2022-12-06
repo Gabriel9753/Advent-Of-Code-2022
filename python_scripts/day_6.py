@@ -10,7 +10,7 @@ class Item_Stack:
     def __init__(self, amount_of_unique) -> None:
         """
         Initialize the stack and set the `total` and `amount_of_unique` attributes.
-        
+
         Args:
             amount_of_unique (int): The part number for the stack.
         """
@@ -23,7 +23,7 @@ class Item_Stack:
         Add an `item` to the end of the stack. If the length of the stack is
         greater than `amount_of_unique`, the first item in the stack is removed
         to keep the stack at a maximum length of `amount_of_unique`.
-        
+
         Args:
             item (any): The item to add to the stack.
         """
@@ -35,7 +35,7 @@ class Item_Stack:
     def is_unique(self):
         """
         Check if the current items in the stack are unique.
-        
+
         Returns:
             bool: `False` if the length of the stack is less than `amount_of_unique`,
             and `True` if the length of the stack is equal to `amount_of_unique`
@@ -45,12 +45,12 @@ class Item_Stack:
             return False
         if len(set(self.stack)) == self.amount_of_unique:
             return True
-    
+
     def __str__(self):
         """
         Return a string representation of the stack, which is the concatenation
         of the items in the stack.
-        
+
         Returns:
             str: The string representation of the stack.
         """
@@ -59,10 +59,10 @@ class Item_Stack:
 def read_file(file_path):
     """
     Read the contents of a file.
-    
+
     Args:
         file_path (str): The path to the file to read.
-    
+
     Returns:
         str: The contents of the file.
     """
@@ -72,11 +72,11 @@ def read_file(file_path):
 def find_marker(puzzle_input, part):
     """
     Find the first occurrence of a unique sequence of characters in a string.
-    
+
     Args:
         puzzle_input (str): The string to search for a unique sequence.
         part (int): The part number for the search.
-    
+
     Returns:
         tuple: A tuple containing the part number, the `Item_Stack` instance
         containing the unique sequence, and the total number of characters processed
@@ -93,10 +93,10 @@ def solve(puzzle_input):
     """
     Solve the puzzle by finding the first occurrence of a unique sequence of
     characters in the `puzzle_input` string for both part 1 and part 2 of the puzzle.
-    
+
     Args:
         puzzle_input (str): The input string to solve the puzzle with.
-    
+
     Returns:
         None
     """
