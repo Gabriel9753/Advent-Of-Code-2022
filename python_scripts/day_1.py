@@ -1,6 +1,8 @@
 import sys
 from time import time
-
+from loguru import logger
+logger.remove()
+logger.add("logging.log", level="INFO")
 day = sys.argv[0].split("/")[-1].split("_")[1].removesuffix(".py")
 
 def read_file(file_path):
@@ -22,13 +24,11 @@ def solve(puzzle_input, top_n=3):
     _sum = 0
     for i in range(top_n):
         _sum += sorted_cal_per_elf[i][1]
-    print(f"1. {sorted_cal_per_elf[0][0]} with {sorted_cal_per_elf[0][1]} calories!")
-    print(f"2. {sorted_cal_per_elf[1][0]} with {sorted_cal_per_elf[1][1]} calories!")
-    print(f"3. {sorted_cal_per_elf[2][0]} with {sorted_cal_per_elf[2][1]} calories!")
-    
-    print(f"Sum of them: {_sum}")
+    logger.info(f"DAY {day} - TOP {top_n} CALORIES")
+    logger.info(f"1. {sorted_cal_per_elf[0][0]} with {sorted_cal_per_elf[0][1]} calories!")
+    logger.info(f"2. {sorted_cal_per_elf[1][0]} with {sorted_cal_per_elf[1][1]} calories!")
+    logger.info(f"3. {sorted_cal_per_elf[2][0]} with {sorted_cal_per_elf[2][1]} calories!")
+    logger.info(f"Sum of them: {_sum}")
 
 if __name__ == '__main__':
-    start = time()
     solve(read_file(f"python_scripts/day_{day}.txt"))
-    print(f"Time elapsed: {time() - start} seconds")

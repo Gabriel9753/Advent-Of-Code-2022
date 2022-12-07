@@ -1,7 +1,7 @@
 import os
 with open(f'python_scripts/template.txt', 'r') as f:
     template = f.read()
-for i in range(1, 26):
+for i in range(8, 26):
     # if os.path.exists(f"python_scripts/day_{i}.py"):
     #     print(f"src/scripts/day_{i}.py already exists!")
     #     continue

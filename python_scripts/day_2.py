@@ -1,6 +1,11 @@
 from collections import defaultdict
 import time
 from tqdm import tqdm
+from loguru import logger
+import sys
+day = sys.argv[0].split("/")[-1].split("_")[1].removesuffix(".py")
+logger.remove()
+logger.add("logging.log", level="INFO")
 
 def read_file(file_path):
     with open(file_path, encoding="utf-8") as f:
@@ -26,25 +31,23 @@ def change_player_based_on(enemy, player):
         else player
   
 def solve(puzzle_input, part=1):
+    logger.info(f"Solving puzzle Day {day}...")
     rounds = puzzle_input.split('\n')
     points_per_game = defaultdict(int)
-    with tqdm(total=len(rounds)) as pbar:
-        for i, round in enumerate(rounds):
-            enemy, player = round.split(' ')
-            # Change player based on rules for part 2
-            if part == 2:
-                player = change_player_based_on(enemy, player)
-            # Calculate base points for the game
-            points_per_game[i] += score_map[player]
-            points_per_game[i] += score_map["WIN"] if is_win(enemy, player) \
-                                else score_map["DRAW"] if is_draw(enemy, player) \
-                                else score_map["LOSE"] if is_lose(enemy, player) \
-                                else 0
-            pbar.update(1)
-    print(f"Points over {len(points_per_game.keys())} games: {sum(points_per_game.values())}")
+    for i, round in enumerate(rounds):
+        enemy, player = round.split(' ')
+        # Change player based on rules for part 2
+        if part == 2:
+            player = change_player_based_on(enemy, player)
+        # Calculate base points for the game
+        points_per_game[i] += score_map[player]
+        points_per_game[i] += score_map["WIN"] if is_win(enemy, player) \
+                            else score_map["DRAW"] if is_draw(enemy, player) \
+                            else score_map["LOSE"] if is_lose(enemy, player) \
+                            else 0
+    logger.info(f"Points over {len(points_per_game.keys())} games: {sum(points_per_game.values())}")
     
 if __name__ == '__main__':
     start_time = time.time()
     solve(read_file(f"python_scripts/day_2.txt"))
     solve(read_file(f"python_scripts/day_2.txt"), part=2)
-    print(f"Time elapsed: {time.time() - start_time} seconds")

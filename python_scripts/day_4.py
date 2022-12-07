@@ -1,5 +1,8 @@
 import sys
 from time import time
+from loguru import logger
+logger.remove()
+logger.add("logging.log", level="INFO")
 day = sys.argv[0].split("/")[-1].split("_")[1].removesuffix(".py")
 
 
@@ -8,7 +11,7 @@ def read_file(file_path):
         return f.read()
 
 def solve(puzzle_input):
-    print("Solving puzzle...")
+    logger.info(f"Solving puzzle day {day}...")
     pairs = [pair.strip().split(",") for pair in puzzle_input.split("\n")]
     ctr_1 = 0
     ctr_2 = 0
@@ -22,13 +25,11 @@ def solve(puzzle_input):
             ctr_2 += 1
         if intersection in [set(pair_part_1), set(pair_part_2)]:
             ctr_1 += 1
-    print(f"1: {ctr_1}")
-    print(f"2: {ctr_2}")
+    logger.info(f"1: {ctr_1}")
+    logger.info(f"2: {ctr_2}")
 
 def main():
     solve(read_file(f"python_scripts/day_{day}.txt"))
 
 if __name__ == '__main__':
-    start = time()
     main()
-    print(f"Time elapsed: {time() - start} seconds")

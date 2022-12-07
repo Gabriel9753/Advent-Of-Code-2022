@@ -1,5 +1,8 @@
 import sys
 from time import time
+from loguru import logger
+logger.remove()
+logger.add("logging.log", level="INFO")
 day = sys.argv[0].split("/")[-1].split("_")[1].removesuffix(".py")
 
 def read_file(file_path):
@@ -37,7 +40,7 @@ def find_char_for_all_backpacks(group):
             return _char
 
 def solve(puzzle_input):
-    print("Solving puzzle...")
+    logger.info(f"Solving puzzle Day {day}...")
     backpacks = puzzle_input.splitlines()
     # Part One
     priorities = []
@@ -45,7 +48,7 @@ def solve(puzzle_input):
         backpack_1, backpack_2 = get_backpacks(backpack_line)
         prio = calc_prio(backpack_1, backpack_2)
         priorities.append(prio)
-    print(f"1. Priorities: {sum(priorities)}")
+    logger.info(f"1. Priorities: {sum(priorities)}")
 
     # Part Two
     priorities = []
@@ -58,12 +61,10 @@ def solve(puzzle_input):
     for backpack_group in backpack_groups:
         prio = get_value_for_char(find_char_for_all_backpacks(backpack_group))
         priorities.append(prio)
-    print(f"2. Priorities: {sum(priorities)}")
+    logger.info(f"2. Priorities: {sum(priorities)}")
 
 def main():
     solve(read_file(f"python_scripts/day_3.txt"))
 
 if __name__ == '__main__':
-    start = time()
     main()
-    print(f"Time elapsed: {time() - start} seconds")

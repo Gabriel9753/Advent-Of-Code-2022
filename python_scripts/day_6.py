@@ -1,5 +1,8 @@
 import sys
 from time import time
+from loguru import logger
+logger.remove()
+logger.add("logging.log", level="INFO")
 day = sys.argv[0].split("/")[-1].split("_")[1].removesuffix(".py")
 
 class Item_Stack:
@@ -100,16 +103,14 @@ def solve(puzzle_input):
     Returns:
         None
     """
-    print("Solving puzzle...")
+    logger.info("Solving puzzle...")
     part, stack, nums = find_marker(puzzle_input, 1)
-    print(f'Part {part}: {stack} (marker at position: {nums})')
+    logger.info(f'Part {part}: {stack} (marker at position: {nums})')
     part, stack, nums = find_marker(puzzle_input, 2)
-    print(f'Part {part}: {stack} (marker at position: {nums})')
+    logger.info(f'Part {part}: {stack} (marker at position: {nums})')
 
 def main():
     solve(read_file(f"python_scripts/day_{day}.txt"))
 
 if __name__ == '__main__':
-    start = time()
     main()
-    print(f"Time elapsed: {time() - start} seconds")

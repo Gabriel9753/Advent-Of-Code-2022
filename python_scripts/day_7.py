@@ -6,6 +6,9 @@ import sys
 from time import time
 import regex as re
 from typing import List
+from loguru import logger
+logger.remove()
+logger.add("logging.log", level="INFO")
 day = sys.argv[0].split("/")[-1].split("_")[1].removesuffix(".py")
 
 PART_1 = 100000
@@ -144,17 +147,15 @@ def parse_input_to_fs(puzzle_input):
 
 def solve(puzzle_input):
     '''Solves the puzzle'''
-    print(f"Solving puzzle from day {day}...")
+    logger.info(f"Solving puzzle from day {day}...")
     fs = parse_input_to_fs(puzzle_input)
     fs.calc_size()
     _sum = sum([_dir.size for _dir in fs.dirs if _dir.size < PART_1])
-    print(f"Part 1: Sum of dirs smaller than {PART_1} Bytes: {_sum} Bytes")
+    logger.info(f"Part 1: Sum of dirs smaller than {PART_1} Bytes: {_sum} Bytes")
     # fs.print_fs()
     _size_deleted_dir = fs.delete_dir_for_update(update_size=PART_2)
     # fs.print_fs()
-    print(f"Part 2: Dir deleted with size: {_size_deleted_dir} bytes")
+    logger.info(f"Part 2: Dir deleted with size: {_size_deleted_dir} bytes")
 
 if __name__ == '__main__':
-    start = time()
     solve(read_file(f"python_scripts/day_{day}.txt"))
-    print(f"Time elapsed: {time() - start} seconds")

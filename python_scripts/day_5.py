@@ -2,6 +2,9 @@ import sys
 from time import time
 day = sys.argv[0].split("/")[-1].split("_")[1].removesuffix(".py")
 import regex as re
+from loguru import logger
+logger.remove()
+logger.add("logging.log", level="INFO")
 
 def read_file(file_path):
     with open(file_path, encoding="utf-8") as f:
@@ -53,7 +56,7 @@ def create_instructions(text_lines):
     return instructions
 
 def solve(puzzle_input):
-    print("Solving puzzle...")
+    logger.info(f"Solving puzzle day {day}...")
     text_lines = puzzle_input.replace('[','').replace(']','').splitlines()
     cargo_stacks = cargos_into_stacks(text_lines)
     instructions = create_instructions(text_lines)
@@ -66,13 +69,11 @@ def solve(puzzle_input):
     answer = ""
     for stack in cargo_stacks:
         answer += "".join(stack.pop())
-    print(answer)
+    logger.info(answer)
     
     
 def main():
     solve(read_file(f"python_scripts/day_{day}.txt"))
 
 if __name__ == '__main__':
-    start = time()
     main()
-    print(f"Time elapsed: {time() - start} seconds")
