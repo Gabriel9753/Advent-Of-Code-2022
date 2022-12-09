@@ -4,6 +4,7 @@ from loguru import logger
 from aocd import get_data
 import regex as re
 import math
+from tqdm import tqdm
 logger.remove()
 logger.add("logging.log", level="INFO")
 day = sys.argv[0].split("/")[-1].split("_")[1].removesuffix(".py")
@@ -114,7 +115,7 @@ def simulate(puzzle_input, amount_knots):
     # _map.head = head
     # _map.knots = knots[:-1]
     # _map.tail = knots[-1]
-    for direction in puzzle_input.split("\n"):
+    for direction in tqdm(puzzle_input.split("\n")):
         _dir = direction.split()[0]
         amount = int(direction.split()[1])
         for _ in range(amount):
@@ -127,10 +128,13 @@ def simulate(puzzle_input, amount_knots):
 
 def solve(puzzle_input):
     logger.info(f"Solving puzzle - day {day}...")
-    knots = simulate(puzzle_input, 2)
-    logger.info(f"Part 1: {len(set(knots[-1].visited))}")
+    # knots = simulate(puzzle_input, 2)
     knots = simulate(puzzle_input, 10)
+    logger.info(f"Part 1: {len(set(knots[0].visited))}")
     logger.info(f"Part 2: {len(set(knots[-1].visited))}")
+    logger.info(f"Head: x={knots[0].head.x}, y={knots[0].head.y}, visited={len(set(knots[0].head.visited))}")
+    for knot in knots:
+        logger.info(f"Knot {knots.index(knot)}: x={knot.x}, y={knot.y}, visited={len(set(knot.visited))}")
                 
 if __name__ == '__main__':
     solve(read_file(f"python_scripts/day_{day}.txt"))
