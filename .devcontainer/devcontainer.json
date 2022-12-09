@@ -3,7 +3,6 @@
 {
 	"name": "Advent Of Code 2022",
 	"context": "..",
-	"workspaceFolder": "..",
 	"build": {
 		"dockerfile": "Dockerfile",
 		"context": "..",
