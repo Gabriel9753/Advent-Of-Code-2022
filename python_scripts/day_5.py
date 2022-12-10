@@ -1,9 +1,10 @@
 import sys
 from time import time
 day = sys.argv[0].split("/")[-1].split("_")[1].removesuffix(".py")
-import regex as re
+import re
+from collections import defaultdict
 from loguru import logger
-logger.remove()
+# logger.remove()
 logger.add("logging.log", level="INFO")
 
 def read_file(file_path):
@@ -11,35 +12,17 @@ def read_file(file_path):
         return f.read()
 
 def cargos_into_stacks(cargo_lines):
-    cargo_stacks = []
-    cargo_bottom_index = 0
-    for i,text_line in enumerate(cargo_lines):
-        if '1' in text_line:
-            cargo_bottom_index = i-1
+    stacks = defaultdict(list)
+    for cargo_line in cargo_lines:
+        stack_no = 1
+        if re.search(r"\d", cargo_line) is not None:
             break
-    for _c in range(cargo_bottom_index, -1, -1):
-        cargos = cargo_lines[_c].split(' ')
-        ship_number = 1
-        cargo_index = 0
-        empty_cargo_ctr = 0
-        while cargo_index < len(cargos):
-            if cargos[cargo_index] != '':
-                if cargo_bottom_index == _c:
-                    cargo_stacks.append([cargos[cargo_index]])
-                else:
-                    cargo_stacks[ship_number-1].append(cargos[cargo_index])
-                ship_number += 1
-                empty_cargo_ctr = 0
-            else:
-                empty_cargo_ctr += 1
-                if ship_number == 1 & empty_cargo_ctr >= 3:
-                    ship_number += 1
-                    empty_cargo_ctr = 0
-                elif empty_cargo_ctr >= 4:
-                    ship_number += 1
-                    empty_cargo_ctr = 0
-            cargo_index += 1
-    return cargo_stacks
+        for cargo in range(1, len(cargo_line), 4):
+            if cargo_line[cargo] != " ":
+                stacks[stack_no].append(cargo_line[cargo])
+            stack_no += 1
+    stacks = {k: v[::-1] for k, v in stacks.items()}
+    return stacks
 
 def create_instructions(text_lines):
     # move 1 from 2 to 1
@@ -55,20 +38,40 @@ def create_instructions(text_lines):
             instructions.append(instruction)
     return instructions
 
+def part_1(stacks, instructions):
+    for instruction in instructions:
+        _from = instruction["from"]
+        _to = instruction["to"]
+        _amount = instruction["move"]
+        for _ in range(_amount):
+            stacks[_to].append(stacks[_from].pop())
+    answer = ""
+    for stack in range(1, len(stacks.keys())+1):
+        answer += "".join(stacks[stack].pop())
+    return answer
+
+def part_2(stacks, instructions):
+    for instruction in instructions:
+        _from = instruction["from"]
+        _to = instruction["to"]
+        _amount = instruction["move"]
+        stacks[_to] = stacks[_to] + stacks[_from][-_amount:]
+        for _ in range(_amount):
+            stacks[_from].pop()
+    answer = ""
+    for stack in range(1, len(stacks.keys())+1):
+        answer += "".join(stacks[stack].pop())
+    return answer
+
 def solve(puzzle_input):
     logger.info(f"Solving puzzle day {day}...")
-    text_lines = puzzle_input.replace('[','').replace(']','').splitlines()
+    text_lines = puzzle_input.splitlines()
     cargo_stacks = cargos_into_stacks(text_lines)
     instructions = create_instructions(text_lines)
-    
-    for instruction in instructions:
-        for _p in range(-instruction["move"], 0):
-            cargo_stacks[instruction["to"]-1].append(cargo_stacks[instruction["from"]-1][_p])
-        for _ in range(instruction["move"]):
-            cargo_stacks[instruction["from"]-1].pop()
-    answer = ""
-    for stack in cargo_stacks:
-        answer += "".join(stack.pop())
+    answer = part_1(cargo_stacks, instructions)
+    logger.info(answer)
+    cargo_stacks = cargos_into_stacks(text_lines)
+    answer = part_2(cargo_stacks, instructions)
     logger.info(answer)
     
     
