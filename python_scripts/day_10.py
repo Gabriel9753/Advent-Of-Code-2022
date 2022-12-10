@@ -2,13 +2,18 @@ import sys
 from time import time
 from loguru import logger
 from aocd import get_data
+import random
 # logger.remove()
+
 logger.add("logging.log", level="INFO")
 day = sys.argv[0].split("/")[-1].split("_")[1].removesuffix(".py")
 
 CRT_WIDTH = 40
 CRT_HEIGHT = 6
-CRT = [["🔘" for _ in range(CRT_WIDTH)] for _ in range(CRT_HEIGHT)]
+BACKGROUND = "⬛️"
+FOREGROUND = "⬜️"
+FOREGROUND_CHOICES = ["🟦", "🟩", "🟨", "🟧", "🟥", "🟪", "🟫"]
+CRT = [[BACKGROUND for _ in range(CRT_WIDTH)] for _ in range(CRT_HEIGHT)]
 
 def read_file(file_path):
     with open(file_path, encoding="utf-8") as f:
@@ -22,15 +27,19 @@ def calculate_signal_strength(register_x, clock):
 def draw_crt(register_x, clock):
     render_pos = (clock-1) % 40
     sprite_pos = [register_x-1, register_x, register_x+1]
-    row = 0
     row = clock // 40
+    if row != (clock-1) // 40:
+        print_crt()
     for pos in sprite_pos:
         if render_pos == pos:
-            CRT[row][pos] = "🍩"
+            CRT[row][pos] = random.choice(FOREGROUND_CHOICES)
     
 def print_crt():
+    print("".join(["-"] * ((CRT_WIDTH+1)*2)))
     for row in CRT:
-        print("".join(row))
+        print("".join(["|"] + row + ["|"]))
+    print("".join(["-"] * ((CRT_WIDTH+1)*2)))
+    
 
 def solve(puzzle_input):
     logger.info(f"Solving puzzle - day {day}...")
@@ -40,7 +49,6 @@ def solve(puzzle_input):
     register_x = 1
     signal_strength = 0
     print_crt()
-    print("\n------------------------------------\n")
     for instruction in instructions:
         command = instruction.split(" ")[0]
         signal_strength += calculate_signal_strength(register_x, clock)
@@ -53,7 +61,7 @@ def solve(puzzle_input):
             draw_crt(register_x, clock)
             register_x += int(instruction.split(" ")[1])
             clock += 1
-    print_crt()
+    # print_crt()
     logger.info(f"1. Signal_strength: {signal_strength}")
 
 if __name__ == '__main__':
