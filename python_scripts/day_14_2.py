@@ -2,11 +2,11 @@ import sys
 from time import time
 from loguru import logger
 from aocd import get_data
+from tqdm import tqdm
 # logger.remove()
 logger.add("logging.log", level="INFO")
 day = sys.argv[0].split("/")[-1].split("_")[1].removesuffix(".py")
-
-with open(f"python_scripts/day_{day}_map.txt", "w") as f:
+with open(f"python_scripts/day_{day}_2__map.txt", "w") as f:
     f.write("")
     
 MIN_X, MAX_X, MIN_Y, MAX_Y = 0, 0, 0, 0
@@ -41,7 +41,7 @@ def print_map(_map):
         row = str(i) + " " * (MAP_SPACING - len(str(i))) + "    ".join(line)
         str_for_file += row + "\n"
         # print(row)
-    with open(f"python_scripts/day_{day}_map.txt", "a+") as f:
+    with open(f"python_scripts/day_{day}_2__map.txt", "a+") as f:
         f.write(str_for_file + "\n\n")
 
 def build_map():
@@ -67,16 +67,16 @@ class Sand:
     
     @classmethod
     def all_rested(cls):
-        for sand in cls._sand:
-            if not sand.stopped:
-                return False
+        if not cls._sand[-1].stopped:
+            return False
         return True
     
     @classmethod
     def move_sand(cls):
-        for sand in cls._sand:
-            if not sand.stopped:
-                sand.move()
+        cls._sand[-1].move()
+        # for sand in cls._sand:
+        #     if not sand.stopped:
+        #         sand.move()
     
     def move(self):
         for _dir in self.directions:
@@ -103,6 +103,9 @@ class Sand:
 def solve(puzzle_input):
     global MIN_X, MAX_X, MIN_Y, MAX_Y
     logger.info(f"Solving puzzle - day {day}...")
+    ground_y = 0
+    ground_start_x = 0
+    ground_to_x = 0
     x_values = []
     y_values = []
     for line in puzzle_input.splitlines():
@@ -113,6 +116,10 @@ def solve(puzzle_input):
             y_values.append(_y)
             
     MIN_X, MAX_X, MIN_Y, MAX_Y = min(x_values), max(x_values), min(y_values), max(y_values)
+    ground_y = MAX_Y + 2
+    MIN_X -= 400
+    MAX_X += 400
+    MAX_Y += 2
     y_range = MAX_Y
     x_range = MAX_X - MIN_X
     # build map with all points
@@ -148,19 +155,24 @@ def solve(puzzle_input):
                         _map[_y][_x] = "#"
                     except IndexError:
                         print(_x, _y)
-    print_map(_map)
+        
+    for i in range(MIN_X, MAX_X + 1):
+        _map[MAX_Y][norm_x(i)] = "#"
     Sand._map = _map
     
     start_x, start_y = norm_x(500), 0
-    
-    while not Sand.sand_moving_in_abyss:
-        if Sand.all_rested():
-            sand = Sand(start_x, start_y)
-            print_map(Sand._map)
-        else:
-            Sand.move_sand()
+    sand = Sand(start_x, start_y)
+    with tqdm(total=99999999) as pbar:
+        while Sand._map[start_y][start_x] != "o":
+            if Sand.all_rested():
+                pbar.update()
+                if Sand._map[start_y][start_x] == "o":
+                    break
+                sand = Sand(start_x, start_y)
+            else:
+                Sand.move_sand()
     print_map(Sand._map)
-    print(len(Sand._sand)-1)
+    print(len(Sand._sand))
     
             
 
