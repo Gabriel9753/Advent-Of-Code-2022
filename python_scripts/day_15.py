@@ -30,14 +30,14 @@ def dict_to_matrix(koordinaten):
     
 def print_matrix(matrix):
     for row in matrix:
-        print("".join(row))
+        print(" ".join(row))
 
 def positions_without_beacons(koordinaten, y=0) -> int:
     _sum = 0
     for key in koordinaten.keys():
         if key[1] != y:
             continue
-        if koordinaten[key] == "#":
+        if koordinaten[key] == "⬛️":
             _sum += 1
     return _sum
 
@@ -46,11 +46,11 @@ def read_file(file_path):
         return f.read()
 
 def found_beacon(koordinaten, coord):
-    return koordinaten[coord] == "B"
+    return koordinaten[coord] == "📍"
 
 def mark_koordiaten(koordinaten, coord):
-    if koordinaten[coord] == ".":
-        koordinaten[coord] = "#"
+    if koordinaten[coord] == "⬜️":
+        koordinaten[coord] = "⬛️"
     return koordinaten
         
 directions = [(-1,-1), (1,-1), (1,1), (-1,1)]
@@ -81,22 +81,27 @@ def mark_radius(koordinaten, start_sensor):
 
 def solve(puzzle_input):
     logger.info(f"Solving puzzle - day {day}...")
-    koordinaten = defaultdict(lambda: ".")
+    koordinaten = defaultdict(lambda: "⬜️")
     sensor_beacon = []
     for line in puzzle_input.splitlines():
         coords = re.findall(r"Sensor at x=(-?\d+), y=(-?\d+): closest beacon is at x=(-?\d+), y=(-?\d+)", line.replace("\n", "").strip())
         coords = coords[0]
         sensor = (int(coords[0]), int(coords[1]))
         beacon = (int(coords[2]), int(coords[3]))
-        koordinaten[sensor] = "S"
-        koordinaten[beacon] = "B"
+        koordinaten[sensor] = "🚦"
+        koordinaten[beacon] = "📍"
         _sb = {"sensor": sensor, "beacon": beacon}
         sensor_beacon.append(_sb)
-    sensors = [key for key in koordinaten.keys() if koordinaten[key] == "S"]
+    sensors = [key for key in koordinaten.keys() if koordinaten[key] == "🚦"]
     for sensor in tqdm(sensors):
         koordinaten = mark_radius(koordinaten, sensor)
-    # matrix = dict_to_matrix(koordinaten)
-    # print_matrix(matrix)
+    koordinaten[(14, 11)] = "🥝"
+    koordinaten[(0,0)] = "🍎"
+    koordinaten[(0, 20)] = "🍎"
+    koordinaten[(20, 0)] = "🍎"
+    koordinaten[(20, 20)] = "🍎"
+    matrix = dict_to_matrix(koordinaten)
+    print_matrix(matrix)
     
     print(f'Part 1: {positions_without_beacons(koordinaten, y=2000000)}')
     
