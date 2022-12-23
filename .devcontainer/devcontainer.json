@@ -16,7 +16,8 @@
 		"ms-python.vscode-pylance",
 		"ms-python.black-formatter",
 		"ms-azuretools.vscode-docker",
-		"github.copilot"
+		"github.copilot",
+		"github.copilot-labs"
 	],
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	"forwardPorts": [
